@@ -17,6 +17,8 @@
 [![Mozilla Add-on](https://badgen.net/amo/users/edge_translate?icon=firefox&color=green)](https://addons.mozilla.org/firefox/addon/edge_translate/)
 [![Mozilla Add-on](https://badgen.net/amo/stars/edge_translate?icon=firefox&color=green)](https://addons.mozilla.org/firefox/addon/edge_translate/)
 
+> Modify by Fr13ndSDP: 去除DeepL翻译器，减少子帧内存占用
+
 View this page in other languages:
 
 * [简体中文](./docs/README_CN.md)

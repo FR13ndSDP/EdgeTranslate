@@ -1,6 +1,5 @@
 import BaiduTranslator from "./baidu.js";
 import BingTranslator from "./bing.js";
-import DeepLTranslator from "./deepl.js";
 import GoogleTranslator from "./google.js";
 import TencentTranslator from "./tencent.js";
 import { log } from "../../../common/scripts/common.js";
@@ -21,14 +20,6 @@ class HybridTranslator {
             GoogleTranslate: new GoogleTranslator(),
             TencentTranslate: new TencentTranslator(channel),
         };
-
-        /**
-         * DeepL translator needs help from other translators and we choose Google for now.
-         */
-        this.REAL_TRANSLATORS.DeepLTranslate = new DeepLTranslator(
-            this.REAL_TRANSLATORS.GoogleTranslate,
-            this.REAL_TRANSLATORS.GoogleTranslate
-        );
 
         /**
          * Hybrid translator config.
