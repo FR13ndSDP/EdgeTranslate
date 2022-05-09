@@ -26,8 +26,8 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    #- run: npm install
-    #- run: npm run build:chrome
+    - run: npm install
+    - run: npm run build:chrome
     - run: pwd
     - run: cd build/chrome
     - run: ls
