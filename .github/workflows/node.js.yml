@@ -29,12 +29,14 @@ jobs:
     #- run: npm install
     #- run: npm run build:chrome
     - run: pwd
+    - run: cd build/chrome
+    - run: ls
     # push the content of <build_dir> to a branch
     # the content will be available at https://raw.githubusercontent.com/<github_user>/<repository>/<target_branch>/<file> , or as github page
-    - name: push output to the output branch
-      uses: crazy-max/ghaction-github-pages@v2.6.0
-      with:
-        target_branch: output
-        build_dir: build/chrome
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #- name: push output to the output branch
+     # uses: crazy-max/ghaction-github-pages@v2.6.0
+      #with:
+       # target_branch: output
+        #build_dir: build/chrome
+      #env:
+       # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
