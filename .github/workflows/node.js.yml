@@ -26,8 +26,9 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm install
-    - run: npm run build:chrome
+    #- run: npm install
+    #- run: npm run build:chrome
+    - run: pwd
     # push the content of <build_dir> to a branch
     # the content will be available at https://raw.githubusercontent.com/<github_user>/<repository>/<target_branch>/<file> , or as github page
     - name: push output to the output branch
