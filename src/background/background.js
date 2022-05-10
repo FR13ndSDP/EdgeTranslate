@@ -11,7 +11,6 @@ import {
     removeDomainBlacklist,
     updateBLackListMenu,
 } from "./library/blacklist.js";
-import { sendHitRequest } from "./library/analytics.js";
 import { promiseTabs } from "../common/scripts/promise.js";
 import Channel from "../common/scripts/channel.js";
 import { getDomain } from "../common/scripts/common.js";
@@ -44,7 +43,6 @@ const DEFAULT_SETTINGS = {
         TranslateAfterDblClick: false,
         TranslateAfterSelect: false,
         CancelTextSelection: false,
-        UseGoogleAnalytics: true,
         UsePDFjs: true,
     },
     DefaultTranslator: "GoogleTranslate",
@@ -177,60 +175,6 @@ chrome.runtime.onInstalled.addListener((details) => {
         setDefaultSettings(buffer, DEFAULT_SETTINGS); // assign default value to buffer
         chrome.storage.sync.set(buffer);
     });
-
-    // 只有在生产环境下，才会展示说明页面
-    if (process.env.NODE_ENV === "production") {
-        if (details.reason === "install") {
-            // 首次安装，引导用户查看wiki
-            chrome.tabs.create({
-                // 为wiki页面创建一个新的标签页
-                url: chrome.i18n.getMessage("WikiLink"),
-            });
-
-            // 告知用户数据收集相关信息
-            chrome.notifications.create("data_collection_notification", {
-                type: "basic",
-                iconUrl: "./icon/icon128.png",
-                title: chrome.i18n.getMessage("AppName"),
-                message: chrome.i18n.getMessage("DataCollectionNotice"),
-            });
-
-            // 尝试发送安装事件
-            setTimeout(() => {
-                sendHitRequest("background", "event", {
-                    ec: "installation", // event category
-                    ea: "installation", // event label
-                });
-            }, 10 * 60 * 1000); // 10 min
-        } else if (details.reason === "update") {
-            // Fix language setting compatibility between Edge Translate 2.x and 1.x.x.
-            chrome.storage.sync.get("languageSetting", (result) => {
-                if (result.languageSetting.sl === "zh-cn") {
-                    result.languageSetting.sl = "zh-CN";
-                } else if (result.languageSetting.sl === "zh-tw") {
-                    result.languageSetting.sl = "zh-TW";
-                }
-
-                if (result.languageSetting.tl === "zh-cn") {
-                    result.languageSetting.tl = "zh-CN";
-                } else if (result.languageSetting.tl === "zh-tw") {
-                    result.languageSetting.tl = "zh-TW";
-                }
-                chrome.storage.sync.set(result);
-            });
-
-            // 从旧版本更新，引导用户查看更新日志
-            chrome.notifications.create("update_notification", {
-                type: "basic",
-                iconUrl: "./icon/icon128.png",
-                title: chrome.i18n.getMessage("AppName"),
-                message: chrome.i18n.getMessage("ExtensionUpdated"),
-            });
-        }
-
-        // 卸载原因调查
-        chrome.runtime.setUninstallURL("https://wj.qq.com/s2/3265930/8f07/");
-    }
 });
 
 /**
@@ -252,12 +196,6 @@ chrome.notifications.onClicked.addListener((notificationId) => {
             chrome.tabs.create({
                 // 为releases页面创建一个新的标签页
                 url: "https://github.com/EdgeTranslate/EdgeTranslate/releases",
-            });
-            break;
-        case "data_collection_notification":
-            chrome.tabs.create({
-                // 为设置页面单独创建一个标签页
-                url: chrome.runtime.getURL("options/options.html#google-analytics"),
             });
             break;
         default:
@@ -468,11 +406,6 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
         ? ["blocking", "requestHeaders", "extraHeaders"]
         : ["blocking", "requestHeaders"]
 );
-
-// send basic hit data to google analytics
-setTimeout(() => {
-    sendHitRequest("background", "pageview", null);
-}, 1000);
 
 /**
  * assign default value to settings which are undefined in recursive way
